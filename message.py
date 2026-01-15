@@ -17,9 +17,9 @@ class CollectMessage():
     
     def collect_messages(self):
 
-        message = self.Message(self.message)
+        m = self.Message(self.message)
 
-        self.append_message(message)
+        self.append_message(m)
 
     @classmethod
     def append_message(cls, message):

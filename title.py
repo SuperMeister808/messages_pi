@@ -17,9 +17,9 @@ class CollectTitel():
         
     def collect_title(self):
 
-        title = self.Titel(self.title)
+        t = self.Titel(self.title)
 
-        self.append_title(title)
+        self.append_title(t)
 
     @classmethod
     def append_title(cls, title):

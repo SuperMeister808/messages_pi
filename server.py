@@ -2,8 +2,8 @@
 from flask import Flask , request , jsonify
 from werkzeug.exceptions import BadRequest
 
-from title import Title
-from message import Message
+from title import CollectTitel
+from message import CollectMessage
 
 class Server():
 
@@ -14,10 +14,6 @@ class Server():
         self.host = host
 
         self.port = port
-
-        self.memory_title = ""
-
-        self.memory_message = ""
 
         self.setup_routes()
 
@@ -43,8 +39,22 @@ class Server():
         except KeyError:
             return jsonify({"Error": "Keys not found"}) , 405
         
-        
-        self.memory_message = message
+    def collect_data(self, title, message):
+
+        t = CollectTitel(title)   
+        m = CollectMessage(message)
+
+        t.collect_title()
+        m.collect_messages()
+
+    def clear_data(self):
+
+        t = CollectTitel("not relevant")
+        m = CollectMessage("not relevant")
+
+        t.clear_titles()
+        m.clear_messages()
+
 
     def run_server(self):
 
