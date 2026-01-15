@@ -1,13 +1,14 @@
 
 from dataclasses import dataclass
+from typing import List
 
 class CollectMessage():
 
+    messages : List["CollectMessage.Message"] = []
+    
     def __init__(self, message):
 
         self.message = message
-
-        self.messages = []
 
     @dataclass
     class Message():
@@ -18,12 +19,19 @@ class CollectMessage():
 
         message = self.Message(self.message)
 
-        self.messages.append(message)
+        self.append_message(message)
 
-    def clear_messages(self):
+    @classmethod
+    def append_message(cls, message):
 
-        self.messages.clear()
+        cls.messages.append(message)
     
-    def return_message(self):
+    @classmethod
+    def clear_messages(cls):
 
-        return self.message
+        cls.messages.clear()
+    
+    @classmethod
+    def return_message(cls):
+
+        return cls.messages

@@ -1,11 +1,12 @@
 
 from dataclasses import dataclass
+from typing import List
 
 class CollectTitel():
 
+    titels : List["CollectTitel.Titel"] = []
+    
     def __init__(self, title):
-
-        self.titles = []
 
         self.title = title
 
@@ -18,14 +19,21 @@ class CollectTitel():
 
         title = self.Titel(self.title)
 
-        self.titles.append(title)
+        self.append_title(title)
 
-    def clear_titles(self):
+    @classmethod
+    def append_title(cls, title):
 
-        self.titles.clear()
+        cls.titels.append(title)
+
+    @classmethod
+    def clear_titles(cls):
+
+        cls.titels.clear()
     
-    def return_titles(self):
+    @classmethod
+    def return_titles(cls):
 
-        return self.titles
+        return cls.titels
 
     
