@@ -1,5 +1,6 @@
 
 from flask import Flask , request , jsonify
+from werkzeug.exceptions import BadRequest
 
 class Server():
 
@@ -18,23 +19,22 @@ class Server():
         @self.app.route("/send", ["POST"])
         def get_data():
 
-            data = request.get_json()
+            try:
+                data = request.get_json()
+            except BadRequest:
+                return jsonify({"Error": "Bad Request"}) , 400
+            
             self.extract_data(data)
             return jsonify({"Success": "Thanks for you request!"}) , 200
 
     def extract_data(self, data):
-
-        if "title" not in data:
-
-            return jsonify({"Error": "Bad Request"}) , 400
         
-        title = data["title"]
+        try:
+            title = data["title"]
 
-        if "message" not in data:
-
-            return jsonify({"Error": "Bad Request"}) , 400
-
-        message = data["message"]
+            message = data["message"]
+        except KeyError:
+            return jsonify({"Error": "Keys not found"}) , 405
 
     def run_server(self):
 
