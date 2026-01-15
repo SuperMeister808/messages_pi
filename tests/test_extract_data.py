@@ -1,7 +1,11 @@
 
 import unittest
+from unittest.mock import patch
 
 from server import Server
+
+from message import CollectMessage
+from title import CollectTitel
 
 class TestExtractData(unittest.TestCase):
 
@@ -11,16 +15,24 @@ class TestExtractData(unittest.TestCase):
 
         self.test_client = self.server.app.test_client()
 
-    def correct_json_format(self):
+    def test_correct_json_format(self):
 
         data = {"title": "title", "message": "message"}
 
-        response = self.test_client.post("/send", json=data)
+        with patch.object(Server, "clear_data") as clear:
 
-        self.assertEqual(response.json, {"Success": "Thanks for you request!"})
-        self.assertEqual(response.status_code, 200)
+            response = self.test_client.post("/send", json=data)
+
+            self.assertEqual(response.json, {"Success": "Thanks for you request!"})
+            self.assertEqual(response.status_code, 200)
         
-        self.assertEqual()
+            result_title = CollectTitel.titels[0]
+            result_message = CollectMessage.messages[0]
 
+            self.assertEqual(result_title.title , "title")
+            self.assertEqual(result_message.message , "message")
 
+if __name__ == "__main__":
+
+    unittest.main()
 
