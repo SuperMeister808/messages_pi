@@ -37,6 +37,26 @@ class TestExtractData(unittest.TestCase):
             CollectTitel.clear_titles()
             CollectMessage.clear_messages()
 
+    def test_less_keys(self):
+
+        data = {"title": "title"}
+
+        with patch.object(Server, "clear_data") as clear:
+
+            response = self.test_client.post("/send", json=data)
+            
+            self.assertEqual(response.json, {"Error": "Keys not found"})
+            self.assertEqual(response.status_code, 405)
+        
+            result_titles = CollectTitel.titels
+            result_messages = CollectMessage.messages
+
+            self.assertEqual(len(result_titles) , 0)
+            self.assertEqual(len(result_messages) , 0)
+
+            CollectTitel.clear_titles()
+            CollectMessage.clear_messages()
+
 if __name__ == "__main__":
 
     unittest.main()
