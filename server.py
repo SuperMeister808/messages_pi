@@ -2,6 +2,9 @@
 from flask import Flask , request , jsonify
 from werkzeug.exceptions import BadRequest
 
+from title import Title
+from message import Message
+
 class Server():
 
     def __init__(self, host, port):
@@ -11,6 +14,10 @@ class Server():
         self.host = host
 
         self.port = port
+
+        self.memory_title = ""
+
+        self.memory_message = ""
 
         self.setup_routes()
 
@@ -35,6 +42,9 @@ class Server():
             message = data["message"]
         except KeyError:
             return jsonify({"Error": "Keys not found"}) , 405
+        
+        
+        self.memory_message = message
 
     def run_server(self):
 
