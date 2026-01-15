@@ -19,7 +19,7 @@ class Server():
 
     def setup_routes(self):
 
-        @self.app.route("/send", ["POST"])
+        @self.app.route("/send", methods=["POST"])
         def get_data():
 
             try:

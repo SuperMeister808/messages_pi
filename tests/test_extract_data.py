@@ -23,14 +23,19 @@ class TestExtractData(unittest.TestCase):
 
             response = self.test_client.post("/send", json=data)
 
+            clear.assert_called_once()
+            
             self.assertEqual(response.json, {"Success": "Thanks for you request!"})
             self.assertEqual(response.status_code, 200)
         
-            result_title = CollectTitel.titels[0]
-            result_message = CollectMessage.messages[0]
+            result_title = CollectTitel.titels[-1]
+            result_message = CollectMessage.messages[-1]
 
             self.assertEqual(result_title.title , "title")
             self.assertEqual(result_message.message , "message")
+
+            CollectTitel.clear_titles()
+            CollectMessage.clear_messages()
 
 if __name__ == "__main__":
 
