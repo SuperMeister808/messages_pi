@@ -6,25 +6,25 @@ class CollectTitel():
 
     titels : List["CollectTitel.Titel"] = []
     
-    def __init__(self, title):
+    def __init__(self, titel):
 
-        self.title = title
+        self.titel = titel
 
     @dataclass
     class Titel():
 
-        title: str
+        titel: str
         
     def collect_title(self):
 
-        t = self.Titel(self.title)
+        t = self.Titel(self.titel)
 
         self.append_title(t)
 
     @classmethod
-    def append_title(cls, title):
+    def append_title(cls, titel):
 
-        cls.titels.append(title)
+        cls.titels.append(titel)
 
     @classmethod
     def clear_titles(cls):

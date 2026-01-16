@@ -28,26 +28,26 @@ class Server():
                 return jsonify({"Error": "Bad Request"}) , 400
             
             try:
-                title , message = self.extract_data(data)
+                titel , message = self.extract_data(data)
             except KeyError:
                 return jsonify({"Error": "Keys not found"}) , 405
             
-            self.collect_data(title, message)
+            self.collect_data(titel, message)
             self.clear_data()
             
             return jsonify({"Success": "Thanks for you request!"}) , 200
 
     def extract_data(self, data):
 
-        title = data["title"]
+        titel = data["titel"]
         message = data["message"]
         
-        return title , message
+        return titel , message
 
         
-    def collect_data(self, title, message):
+    def collect_data(self, titel, message):
 
-        t = CollectTitel(title)   
+        t = CollectTitel(titel)   
         m = CollectMessage(message)
 
         t.collect_title()
