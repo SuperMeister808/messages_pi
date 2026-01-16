@@ -76,6 +76,8 @@ class TestExtractData(unittest.TestCase):
         
             response = self.test_client.post("/send", json=data)
             
+            clear.assert_called_once()
+            
             self.assertEqual(response.json, {"Success": "Thanks for you request!"})
             self.assertEqual(response.status_code, 200)
         

@@ -22,6 +22,10 @@ class Server():
         @self.app.route("/send", methods=["POST"])
         def get_data():
 
+            if request.content_type != "application/json":
+
+                return jsonify({"Error": "Content Type application/json not found!"}) , 405
+            
             try:
                 data = request.get_json()
             except BadRequest:
