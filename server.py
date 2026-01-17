@@ -4,6 +4,7 @@ from werkzeug.exceptions import BadRequest
 
 from title import CollectTitel
 from message import CollectMessage
+from database import Database
 
 class Server():
 
@@ -37,6 +38,7 @@ class Server():
                 return jsonify({"Error": "Keys not found"}) , 405
             
             self.collect_data(titel, message)
+            self.write_data_on_database()
             self.clear_data()
             
             return jsonify({"Success": "Thanks for you request!"}) , 200
@@ -57,6 +59,13 @@ class Server():
         t.collect_title()
         m.collect_messages()
 
+    def write_data_on_database(self):
+
+        d = Database()
+
+        d.connect_to_database()
+        d.add_message(CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+    
     def clear_data(self):
 
         t = CollectTitel("not relevant")
