@@ -16,13 +16,12 @@ class TestWriteOnDatabase(unittest.TestCase):
 
         data = {"titel": "titel", "message": "message"}
         
-        with patch.object(Database, "connect_to_database") as connect:
+        with patch.object(Database, "connect_to_database"):
 
             with patch.object(Database, "add_message") as add:
 
                 response = self.test_client.post("/send", json=data)  
-
-                connect.assert_called_once()
+                
                 add.assert_called_once()
 
                 self.assertEqual(response.status_code, 200)

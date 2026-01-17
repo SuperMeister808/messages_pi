@@ -21,21 +21,24 @@ class TestExtractData(unittest.TestCase):
 
         with patch.object(Server, "clear_data") as clear:
 
-            response = self.test_client.post("/send", json=data)
-
-            clear.assert_called_once()
+            with patch.object(Server, "write_data_on_database") as database:
             
-            self.assertEqual(response.json, {"Success": "Thanks for you request!"})
-            self.assertEqual(response.status_code, 200)
+                response = self.test_client.post("/send", json=data)
+
+                database.assert_called_once()
+                clear.assert_called_once()
+            
+                self.assertEqual(response.json, {"Success": "Thanks for you request!"})
+                self.assertEqual(response.status_code, 200)
         
-            result_title = CollectTitel.titels[-1]
-            result_message = CollectMessage.messages[-1]
+                result_title = CollectTitel.titels[-1]
+                result_message = CollectMessage.messages[-1]
 
-            self.assertEqual(result_title.titel , "titel")
-            self.assertEqual(result_message.message , "message")
+                self.assertEqual(result_title.titel , "titel")
+                self.assertEqual(result_message.message , "message")
 
-            CollectTitel.clear_titles()
-            CollectMessage.clear_messages()
+                CollectTitel.clear_titles()
+                CollectMessage.clear_messages()
 
     def test_less_keys(self):
 
@@ -74,21 +77,24 @@ class TestExtractData(unittest.TestCase):
 
         with patch.object(Server, "clear_data") as clear:
         
-            response = self.test_client.post("/send", json=data)
+            with patch.object(Server, "write_data_on_database") as database:
             
-            clear.assert_called_once()
+                response = self.test_client.post("/send", json=data)
             
-            self.assertEqual(response.json, {"Success": "Thanks for you request!"})
-            self.assertEqual(response.status_code, 200)
+                database.assert_called_once()
+                clear.assert_called_once()
+            
+                self.assertEqual(response.json, {"Success": "Thanks for you request!"})
+                self.assertEqual(response.status_code, 200)
         
-            result_titles = CollectTitel.titels
-            result_messages = CollectMessage.messages
+                result_titles = CollectTitel.titels
+                result_messages = CollectMessage.messages
 
-            self.assertEqual(result_titles[-1].titel , "titel")
-            self.assertEqual(result_messages[-1].message , "message")
+                self.assertEqual(result_titles[-1].titel , "titel")
+                self.assertEqual(result_messages[-1].message , "message")
 
-            CollectTitel.clear_titles()
-            CollectMessage.clear_messages()
+                CollectTitel.clear_titles()
+                CollectMessage.clear_messages()
 
 if __name__ == "__main__":
 
