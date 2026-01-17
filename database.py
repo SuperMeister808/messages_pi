@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS messages(
 
         self.connect_to_database()
 
-        self.cursor.execute(f"""
+        self.cursor.execute("""
 INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
         self.conn.commit()
 
@@ -42,7 +42,11 @@ INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))
         self.connect_to_database()
         
         self.cursor.execute("SELECT * FROM messages")
-        print(self.cursor.fetchall())
+        colums = [desc[0] for desc in self.cursor.description]
+        rows = self.cursor.fetchall()
+
+        print(colums)
+        print(rows)
 
         self.close_connection()
 
