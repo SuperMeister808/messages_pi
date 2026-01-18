@@ -5,39 +5,38 @@ class Database():
 
     def create_table(self):
         
-        conn = sqlite3.connect("messages.db")
-        cursor = conn.cursor()
+        with sqlite3.connect("messages.db") as conn:
+            cursor = conn.cursor()
         
-        cursor.execute("""
-CREATE TABLE IF NOT EXISTS messages(
-    titel TEXT,
-    message TEXT)""")
-        conn.commit()
-
-        conn.close()
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages(
+                titel TEXT,
+                message TEXT)""")
+            conn.commit()
         
     def add_message(self, titel, message):
 
-        conn = sqlite3.connect("messages.db")
-        cursor = conn.cursor()
+        self.create_table()
+        
+        with sqlite3.connect("messages.db") as conn:
+            cursor = conn.cursor()
 
-        cursor.execute("""
-INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
-        conn.commit()
-
-        conn.close()
+            cursor.execute("""
+            INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
+            conn.commit()
 
     def print_table(self):
 
-        conn = sqlite3.connect("messages.db")
-        cursor = conn.cursor()
+        with sqlite3.connect("messages.db") as conn:
         
-        cursor.execute("SELECT * FROM messages")
-        colums = [desc[0] for desc in self.cursor.description]
-        rows = cursor.fetchall()
+            cursor = conn.cursor()
+        
+            cursor.execute("SELECT * FROM messages")
+            colums = [desc[0] for desc in cursor.description]
+            rows = cursor.fetchall()
 
-        print(colums)
-        print(rows)
+            print(colums)
+            print(rows)
 
-        conn.close()
+
 
