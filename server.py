@@ -6,6 +6,8 @@ from title import CollectTitel
 from message import CollectMessage
 from database import Database
 
+import sqlite3
+
 class Server():
 
     def __init__(self, host, port):
@@ -23,25 +25,27 @@ class Server():
         @self.app.route("/send", methods=["POST"])
         def get_data():
 
-            if request.content_type != "application/json":
+            with sqlite3.connect("messages.db") as conn:
+            
+                if request.content_type != "application/json":
 
-                return jsonify({"Error": "Content Type application/json not found!"}) , 405
+                    return jsonify({"Error": "Content Type application/json not found!"}) , 405
             
-            try:
-                data = request.get_json()
-            except BadRequest:
-                return jsonify({"Error": "Bad Request"}) , 400
+                try:
+                    data = request.get_json()
+                except BadRequest:
+                    return jsonify({"Error": "Bad Request"}) , 400
             
-            try:
-                titel , message = self.extract_data(data)
-            except KeyError:
-                return jsonify({"Error": "Keys not found"}) , 405
+                try:
+                    titel , message = self.extract_data(data)
+                except KeyError:
+                    return jsonify({"Error": "Keys not found"}) , 405
             
-            self.collect_data(titel, message)
-            self.write_data_on_database()
-            self.clear_data()
+                self.collect_data(titel, message)
+                self.write_data_on_database(conn)
+                self.clear_data()
             
-            return jsonify({"Success": "Thanks for you request!"}) , 200
+                return jsonify({"Success": "Thanks for you request!"}) , 200
 
     def extract_data(self, data):
 
@@ -59,10 +63,11 @@ class Server():
         t.collect_title()
         m.collect_messages()
 
-    def write_data_on_database(self):
+    def write_data_on_database(self, conn):
 
         d = Database()
-        d.write_on_database(CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+        d.create_table(conn)
+        d.add_message(conn, CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
     
     def clear_data(self):
 
