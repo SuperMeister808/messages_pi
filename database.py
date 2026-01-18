@@ -34,7 +34,7 @@ INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))
         
         cursor.execute("SELECT * FROM messages")
         colums = [desc[0] for desc in self.cursor.description]
-        rows = self.cursor.fetchall()
+        rows = cursor.fetchall()
 
         print(colums)
         print(rows)
