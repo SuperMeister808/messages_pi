@@ -62,7 +62,7 @@ class Server():
         m = CollectMessage(message)
         c = CollectConnections(conn)
 
-        c.append_connection()
+        c.collect_connection()
         t.collect_title()
         m.collect_messages()
 

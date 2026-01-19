@@ -15,7 +15,7 @@ class CollectConnections():
 
         connection: sqlite3.Connection
 
-    def get_connection(self):
+    def collect_connection(self):
 
         c = self.Connection(self.connection)
 
@@ -23,7 +23,7 @@ class CollectConnections():
 
     @classmethod
     def append_connection(cls, c):
-
+        
         cls.connections.append(c)
 
     @classmethod
