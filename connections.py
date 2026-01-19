@@ -26,4 +26,9 @@ class CollectConnections():
 
         cls.connections.append(c)
 
+    @classmethod
+    def clear_connections(cls):
+
+        cls.connections.clear()
+
     

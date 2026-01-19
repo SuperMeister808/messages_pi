@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from server import Server
 from database import Database
+from connections import CollectConnections
 
 import sqlite3
 
@@ -37,22 +38,25 @@ class TestWriteOnDatabase(unittest.TestCase):
         
         with patch("sqlite3.connect", side_effect=lambda _:original_connect(":memory:")) as connect:
 
-            response = self.test_client.post("/send", json=data)
+            with patch.object(CollectConnections, "clear_connections") as clear:
+            
+                response = self.test_client.post("/send", json=data)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, {"Success": "Thanks for you request!"})
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json, {"Success": "Thanks for you request!"})
 
-            conn = sqlite3.connect("Testing...")
-            cursor = conn.cursor()
+                conn = CollectConnections.connections[-1]
 
-            cursor.execute("SELECT * FROM messages")
-            colums = [desc[0] for desc in cursor.description]
-            rows = cursor.fetchall()
+                cursor = conn.cursor()
 
-            self.assertEqual(colums, ['titel', 'message'])
-            self.assertEqual(rows, [("Test", "This is a test")])
+                colums = [desc[0] for desc in cursor.description]
+                
+                rows = cursor.fetchall()
+                
+                self.assertEqual(colums, ['titel', 'message'])
+                self.assertEqual(rows, [("Test", "This is a test")])
 
-            conn.close()
+                conn.close()
 
 
 if __name__ == "__main__":

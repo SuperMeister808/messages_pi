@@ -75,9 +75,11 @@ class Server():
 
         t = CollectTitel("not relevant")
         m = CollectMessage("not relevant")
+        c = CollectConnections("not relevant")
 
         t.clear_titles()
         m.clear_messages()
+        c.clear_connections()
 
 
     def run_server(self):
