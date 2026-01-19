@@ -5,6 +5,7 @@ from werkzeug.exceptions import BadRequest
 from title import CollectTitel
 from message import CollectMessage
 from database import Database
+from connections import CollectConnections
 
 import sqlite3
 
@@ -41,7 +42,7 @@ class Server():
                 except KeyError:
                     return jsonify({"Error": "Keys not found"}) , 405
             
-                self.collect_data(titel, message)
+                self.collect_data(titel, message, conn)
                 self.write_data_on_database(conn)
                 self.clear_data()
             
@@ -55,18 +56,19 @@ class Server():
         return titel , message
 
         
-    def collect_data(self, titel, message):
+    def collect_data(self, titel, message, conn):
 
         t = CollectTitel(titel)   
         m = CollectMessage(message)
+        c = CollectConnections(conn)
 
+        c.append_connection()
         t.collect_title()
         m.collect_messages()
 
     def write_data_on_database(self, conn):
 
         d = Database()
-        d.create_table(conn)
         d.add_message(conn, CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
     
     def clear_data(self):

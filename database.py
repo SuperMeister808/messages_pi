@@ -16,19 +16,14 @@ class Database():
         
     def add_message(self, conn, titel, message):
 
+        self.create_table(conn)
+        
         cursor = conn.cursor()
-
+        
         cursor.execute("""
         INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
         
         conn.commit()
-
-    def write_on_database(self, titel, message):
-
-        with sqlite3.connect("messages.db") as conn:
-
-            self.create_table(conn)
-            self.add_message(conn, titel, message)
     
     def print_table(self):
 
