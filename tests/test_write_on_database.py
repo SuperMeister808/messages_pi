@@ -42,6 +42,9 @@ class TestWriteOnDatabase(unittest.TestCase):
             
                 response = self.test_client.post("/send", json=data)
 
+                connect.assert_called_once()
+                clear.assert_called_once()
+                
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response.json, {"Success": "Thanks for you request!"})
 
@@ -56,6 +59,8 @@ class TestWriteOnDatabase(unittest.TestCase):
                 self.assertEqual(colums, ['titel', 'message'])
                 self.assertEqual(rows, [("Test", "This is a test")])
 
+                CollectConnections.clear_connections()
+                
                 conn.close()
 
 
