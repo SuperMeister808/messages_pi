@@ -3,49 +3,60 @@ import sqlite3
 
 class Database():
 
-    def __init__(self):
+    def __init__(self, conn):
 
-        self.conn = None
-
-        self.cursor = None
+        self.conn = conn
     
-    def connect_to_database(self):
+    def create_table(self):
+        
+        cursor = self.conn.cursor()
+        
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS messages(
+            titel TEXT,
+            message TEXT)""")
+        
+        self.conn.commit()
+        
+    def add_message(self, titel, message):
 
-        self.conn = sqlite3.connect("messages.db")
-
-        self.cursor = self.conn.cursor()
+        self.create_table(self.conn)
+        
+        cursor = self.conn.cursor()
+        
+        cursor.execute("""
+        INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
+        
+        self.conn.commit()
 
     def create_table(self):
-
-        self.connect_to_database()
         
-        self.cursor.execute("""
+        cursor = self.conn.cursor()
+        
+        cursor.execute("""
 CREATE TABLE IF NOT EXISTS messages(
     titel TEXT,
     message TEXT)""")
         self.conn.commit()
-
-        self.close_connection()
         
     def add_message(self, titel, message):
 
-        self.connect_to_database()
+        self.create_table()
 
-        self.cursor.execute(f"""
+        cursor = self.conn.cursor()
+        
+        cursor.execute(f"""
 INSERT INTO messages (titel, message) VALUES (?, ?)""", (titel, message))    
         self.conn.commit()
 
-        self.close_connection()
-
     def print_table(self):
 
-        self.connect_to_database()
+        cursor = self.conn.cursor()
         
-        self.cursor.execute("SELECT * FROM messages")
-        print(self.cursor.fetchall())
+        cursor.execute("SELECT * FROM messages")
+        
+        colums = [desc[0] for desc in cursor.description]
+        rows = cursor.fetchall()
 
-        self.close_connection()
-
-    def close_connection(self):
-
-        self.conn.close()
+        print(colums)
+        print(rows)
