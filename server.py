@@ -71,8 +71,8 @@ class Server():
 
     def write_data_on_database(self, conn):
 
-        d = Database()
-        d.add_message(conn, CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+        d = Database(conn)
+        d.add_message(CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
  
     def clear_data(self):
 

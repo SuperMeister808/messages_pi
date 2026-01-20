@@ -52,5 +52,5 @@ class TestDatabase(unittest.TestCase):
     
 if __name__ == "__main__":
 
-    test = TestDatabase()
-    test.test_correct_arguments()
+    unittest.main()
+    
