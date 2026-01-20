@@ -11,13 +11,13 @@ class CollectTitle():
         self.title = title
 
     @dataclass
-    class Titel():
+    class Title():
 
         title: str
         
     def collect_title(self):
 
-        t = self.Titel(self.title)
+        t = self.Title(self.title)
 
         self.append_title(t)
 
