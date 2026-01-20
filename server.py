@@ -24,7 +24,7 @@ class Server():
     def setup_routes(self):
 
         @self.app.route("/send", methods=["POST"])
-        def get_data():
+        def send_data():
 
                 conn = sqlite3.connect("messages.db")
 
