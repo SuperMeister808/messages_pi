@@ -21,7 +21,7 @@ class TestExtractData(unittest.TestCase):
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "clear_data") as clear:
-                with patch.object(Server, "write_data_on_database") as database:
+                with patch.object(Server, "write_data") as database:
                         with patch.object(Server, "close_connection") as close:
 
                             response = self.test_client.post("/send", json=data)
@@ -91,7 +91,7 @@ class TestExtractData(unittest.TestCase):
         data = {"title": "title", "message": "message", "extra": "extra"}
 
         with patch.object(Server, "clear_data") as clear_data:
-            with patch.object(Server, "write_data_on_database") as database:
+            with patch.object(Server, "write_data") as database:
                 with patch("sqlite3.connect", return_value="not relevant") as connection:
                     with patch.object(Server, "close_connection") as clear_connection:
 

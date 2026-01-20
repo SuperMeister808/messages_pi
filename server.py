@@ -61,7 +61,7 @@ class Server():
         #for Testing...
         self.collect_data(conn, title, message)
         
-        self.write_data_on_database(conn, title, message)
+        self.write_data(conn, title, message)
 
     def collect_data(self, conn, title, message):
 
@@ -74,7 +74,7 @@ class Server():
         m.collect_messages()
         c.collect_connection()
 
-    def write_data_on_database(self, conn, title, message):
+    def write_data(self, conn, title, message):
         
         d = Database(conn)
         d.add_message(title, message)
