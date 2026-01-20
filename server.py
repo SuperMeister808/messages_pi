@@ -35,6 +35,7 @@ class Server():
                 try:
                     data = request.get_json()
                 except BadRequest:
+                    self.close_connection(conn)
                     return jsonify({"Error": "Bad Request"}) , 400
             
                 data["conn"] = conn
@@ -42,6 +43,7 @@ class Server():
                 try:
                     self.extract_data(data)
                 except KeyError:
+                    self.close_connection(conn)
                     return jsonify({"Error": "Keys not found"}) , 405
                 
                 self.clear_data()
