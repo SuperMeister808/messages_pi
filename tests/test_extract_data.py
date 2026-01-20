@@ -28,6 +28,8 @@ class TestExtractData(unittest.TestCase):
             
                             connection.assert_called_once()
                             close.assert_called_once()
+                            clear.assert_called_once()
+                            database.assert_called_once()
                             
                             self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                             self.assertEqual(response.status_code, 200)
@@ -97,6 +99,8 @@ class TestExtractData(unittest.TestCase):
             
                         connection.assert_called_once()
                         clear_connection.assert_called_once()
+                        clear_data.assert_called_once()
+                        database.assert_called_once()
                         
                         self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                         self.assertEqual(response.status_code, 200)

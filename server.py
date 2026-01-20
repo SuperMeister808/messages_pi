@@ -30,6 +30,7 @@ class Server():
 
                 if request.content_type != "application/json":
 
+                    self.close_connection(conn)
                     return jsonify({"Error": "Content Type application/json not found!"}) , 405
             
                 try:
