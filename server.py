@@ -28,7 +28,6 @@ class Server():
 
                 conn = sqlite3.connect("messages.db")
 
-            
                 if request.content_type != "application/json":
 
                     return jsonify({"Error": "Content Type application/json not found!"}) , 405
@@ -38,25 +37,28 @@ class Server():
                 except BadRequest:
                     return jsonify({"Error": "Bad Request"}) , 400
             
+                data["conn"] = conn
+
                 try:
-                    titel , message = self.extract_data(data)
+                    self.extract_data(data)
                 except KeyError:
                     return jsonify({"Error": "Keys not found"}) , 405
-            
-                self.collect_data(conn, titel, message)
-                self.write_data_on_database(conn)
+                
                 self.clear_data()
-            
                 self.close_connection(conn)
 
                 return jsonify({"Success": "Thanks for you request!"}) , 200
-
+    
     def extract_data(self, data):
 
+        conn = data["conn"]
         titel = data["titel"]
         message = data["message"]
         
-        return titel , message
+        #for Testing...
+        self.collect_data(conn, titel, message)
+        
+        self.write_data_on_database(conn, titel, message)
 
     def collect_data(self, conn, titel, message):
 
@@ -69,20 +71,16 @@ class Server():
         m.collect_messages()
         c.collect_connection()
 
-    def write_data_on_database(self, conn):
-
+    def write_data_on_database(self, conn, titel, message):
+        
         d = Database(conn)
-        d.add_message(CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+        d.add_message(titel, message)
  
     def clear_data(self):
 
-        t = CollectTitel("not relevant")
-        m = CollectMessage("not relevant")
-        c = CollectConnections("not relevant")
-
-        t.clear_titles()
-        m.clear_messages()
-        c.clear_connections()
+        CollectConnections.clear_connections()
+        CollectMessage.clear_messages()
+        CollectTitel.clear_titles()
 
     def close_connection(self, conn):
 
