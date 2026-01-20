@@ -5,7 +5,7 @@ from unittest.mock import patch
 from server import Server
 
 from message import CollectMessage
-from title import CollectTitel
+from title import CollectTitle
 
 class TestExtractData(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class TestExtractData(unittest.TestCase):
 
     def test_correct_json_format(self):
 
-        data = {"titel": "titel", "message": "message"}
+        data = {"title": "title", "message": "message"}
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "clear_data") as clear:
@@ -34,18 +34,18 @@ class TestExtractData(unittest.TestCase):
                             self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                             self.assertEqual(response.status_code, 200)
         
-                            result_title = CollectTitel.titels[-1]
+                            result_title = CollectTitle.titles[-1]
                             result_message = CollectMessage.messages[-1]
 
-                            self.assertEqual(result_title.titel , "titel")
+                            self.assertEqual(result_title.title , "title")
                             self.assertEqual(result_message.message , "message")
 
-                            CollectTitel.clear_titles()
+                            CollectTitle.clear_titles()
                             CollectMessage.clear_messages()
 
     def test_less_keys(self):
 
-        data = {"titel": "titel"}
+        data = {"title": "title"}
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "close_connection") as close:
@@ -58,7 +58,7 @@ class TestExtractData(unittest.TestCase):
                 self.assertEqual(response.json, {"Error": "Keys not found"})
                 self.assertEqual(response.status_code, 405)
         
-                result_titles = CollectTitel.titels
+                result_titles = CollectTitle.titles
                 result_messages = CollectMessage.messages
 
                 self.assertEqual(len(result_titles) , 0)
@@ -67,7 +67,7 @@ class TestExtractData(unittest.TestCase):
 
     def test_wrong_key(self):
 
-        data = {"titel": "titel", "letter": "letter"}
+        data = {"title": "title", "letter": "letter"}
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "close_connection") as close:
@@ -80,7 +80,7 @@ class TestExtractData(unittest.TestCase):
                 self.assertEqual(response.json, {"Error": "Keys not found"})
                 self.assertEqual(response.status_code, 405)
         
-                result_titles = CollectTitel.titels
+                result_titles = CollectTitle.titles
                 result_messages = CollectMessage.messages
 
                 self.assertEqual(len(result_titles) , 0)
@@ -88,7 +88,7 @@ class TestExtractData(unittest.TestCase):
 
     def test_extra_key(self):
 
-        data = {"titel": "titel", "message": "message", "extra": "extra"}
+        data = {"title": "title", "message": "message", "extra": "extra"}
 
         with patch.object(Server, "clear_data") as clear_data:
             with patch.object(Server, "write_data_on_database") as database:
@@ -105,13 +105,13 @@ class TestExtractData(unittest.TestCase):
                         self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                         self.assertEqual(response.status_code, 200)
         
-                        result_titles = CollectTitel.titels
+                        result_titles = CollectTitle.titles
                         result_messages = CollectMessage.messages
 
-                        self.assertEqual(result_titles[-1].titel , "titel")
+                        self.assertEqual(result_titles[-1].title , "title")
                         self.assertEqual(result_messages[-1].message , "message")
 
-                        CollectTitel.clear_titles()
+                        CollectTitle.clear_titles()
                         CollectMessage.clear_messages()
 
 if __name__ == "__main__":

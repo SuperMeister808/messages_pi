@@ -2,7 +2,7 @@
 from flask import Flask , request , jsonify
 from werkzeug.exceptions import BadRequest
 
-from title import CollectTitel
+from title import CollectTitle
 from message import CollectMessage
 from database import Database
 from connections import CollectConnections
@@ -55,18 +55,18 @@ class Server():
     def extract_data(self, data):
 
         conn = data["conn"]
-        titel = data["titel"]
+        title = data["title"]
         message = data["message"]
         
         #for Testing...
-        self.collect_data(conn, titel, message)
+        self.collect_data(conn, title, message)
         
-        self.write_data_on_database(conn, titel, message)
+        self.write_data_on_database(conn, title, message)
 
-    def collect_data(self, conn, titel, message):
+    def collect_data(self, conn, title, message):
 
 
-        t = CollectTitel(titel)   
+        t = CollectTitle(title)   
         m = CollectMessage(message)
         c = CollectConnections(conn)
         
@@ -74,16 +74,16 @@ class Server():
         m.collect_messages()
         c.collect_connection()
 
-    def write_data_on_database(self, conn, titel, message):
+    def write_data_on_database(self, conn, title, message):
         
         d = Database(conn)
-        d.add_message(titel, message)
+        d.add_message(title, message)
  
     def clear_data(self):
 
         CollectConnections.clear_connections()
         CollectMessage.clear_messages()
-        CollectTitel.clear_titles()
+        CollectTitle.clear_titles()
 
     def close_connection(self, conn):
 

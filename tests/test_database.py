@@ -3,8 +3,6 @@ import unittest
 from unittest.mock import patch
 
 from server import Server
-from title import CollectTitel
-from message import CollectMessage
 
 import sqlite3
 
@@ -17,7 +15,7 @@ class TestDatabase(unittest.TestCase):
     
     def test_correct_arguments(self):
 
-            data = {"titel": "Greet", "message": "Hello World!"}
+            data = {"title": "Greet", "message": "Hello World!"}
 
             conn = sqlite3.connect(":memory:")
 
@@ -41,7 +39,7 @@ class TestDatabase(unittest.TestCase):
                         colums = [desc[0] for desc in cursor.description]
                         rows = cursor.fetchall()
 
-                        self.assertEqual(colums, ["titel", "message"])
+                        self.assertEqual(colums, ["title", "message"])
                         self.assertEqual(rows, [("Greet", "Hello World!")])
 
             conn.close()  

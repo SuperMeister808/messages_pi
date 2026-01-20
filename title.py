@@ -2,38 +2,38 @@
 from dataclasses import dataclass
 from typing import List
 
-class CollectTitel():
+class CollectTitle():
 
-    titels : List["CollectTitel.Titel"] = []
+    titles : List["CollectTitle.Titel"] = []
     
-    def __init__(self, titel):
+    def __init__(self, title):
 
-        self.titel = titel
+        self.title = title
 
     @dataclass
     class Titel():
 
-        titel: str
+        title: str
         
     def collect_title(self):
 
-        t = self.Titel(self.titel)
+        t = self.Titel(self.title)
 
         self.append_title(t)
 
     @classmethod
-    def append_title(cls, titel):
+    def append_title(cls, title):
 
-        cls.titels.append(titel)
+        cls.titles.append(title)
 
     @classmethod
     def clear_titles(cls):
 
-        cls.titels.clear()
+        cls.titles.clear()
     
     @classmethod
     def return_titles(cls):
 
-        return cls.titels
+        return cls.titles
 
     
