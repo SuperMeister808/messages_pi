@@ -26,6 +26,9 @@ class TestExtractData(unittest.TestCase):
 
                             response = self.test_client.post("/send", json=data)
             
+                            connection.assert_called_once()
+                            close.assert_called_once()
+                            
                             self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                             self.assertEqual(response.status_code, 200)
         
@@ -47,6 +50,9 @@ class TestExtractData(unittest.TestCase):
             
                 response = self.test_client.post("/send", json=data)
             
+                connection.assert_called_once()
+                close.assert_called_once()
+                
                 self.assertEqual(response.json, {"Error": "Keys not found"})
                 self.assertEqual(response.status_code, 405)
         
@@ -66,6 +72,9 @@ class TestExtractData(unittest.TestCase):
                 
                 response = self.test_client.post("/send", json=data)
             
+                connection.assert_called_once()
+                close.assert_called_once()
+                
                 self.assertEqual(response.json, {"Error": "Keys not found"})
                 self.assertEqual(response.status_code, 405)
         
@@ -86,6 +95,9 @@ class TestExtractData(unittest.TestCase):
 
                         response = self.test_client.post("/send", json=data)
             
+                        connection.assert_called_once()
+                        clear_connection.assert_called_once()
+                        
                         self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                         self.assertEqual(response.status_code, 200)
         
