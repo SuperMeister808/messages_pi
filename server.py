@@ -26,7 +26,11 @@ class Server():
         @self.app.route("/send", methods=["POST"])
         def get_data():
 
+<<<<<<< HEAD
             with sqlite3.connect("messages.db") as conn:
+=======
+                conn = sqlite3.connect("messages.db")
+>>>>>>> update_database
             
                 if request.content_type != "application/json":
 
@@ -42,10 +46,19 @@ class Server():
                 except KeyError:
                     return jsonify({"Error": "Keys not found"}) , 405
             
+<<<<<<< HEAD
                 self.collect_data(titel, message, conn)
                 self.write_data_on_database(conn)
                 self.clear_data()
             
+=======
+                self.collect_data(conn, titel, message)
+                self.write_data_on_database(conn)
+                self.clear_data()
+            
+                self.close_connection(conn)
+                
+>>>>>>> update_database
                 return jsonify({"Success": "Thanks for you request!"}) , 200
 
     def extract_data(self, data):
@@ -56,7 +69,11 @@ class Server():
         return titel , message
 
         
+<<<<<<< HEAD
     def collect_data(self, titel, message, conn):
+=======
+    def collect_data(self,conn, titel, message):
+>>>>>>> update_database
 
         t = CollectTitel(titel)   
         m = CollectMessage(message)
@@ -65,11 +82,19 @@ class Server():
         c.collect_connection()
         t.collect_title()
         m.collect_messages()
+        c.collect_connection()
 
     def write_data_on_database(self, conn):
+<<<<<<< HEAD
 
         d = Database()
         d.add_message(conn, CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+=======
+
+        d = Database(conn)
+
+        d.add_message(CollectTitel.titels[-1].titel, CollectMessage.messages[-1].message)
+>>>>>>> update_database
     
     def clear_data(self):
 
@@ -81,7 +106,10 @@ class Server():
         m.clear_messages()
         c.clear_connections()
 
+    def close_connection(self, conn):
 
+        conn.close()
+    
     def run_server(self):
 
         self.app.run(self.host, self.port)

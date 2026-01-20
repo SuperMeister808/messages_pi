@@ -6,18 +6,18 @@ class CollectConnections():
 
     connections = []
 
-    def __init__(self, connection):
+    def __init__(self, conn):
 
-        self.connection = connection
+        self.conn = conn
     
     @dataclass
     class Connection():
 
-        connection: sqlite3.Connection
+        conn: sqlite3.Connection
 
     def collect_connection(self):
 
-        c = self.Connection(self.connection)
+        c = self.Connection(self.conn)
 
         self.append_connection(c)
 
