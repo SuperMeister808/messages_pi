@@ -24,7 +24,7 @@ class Server():
     def setup_routes(self):
 
         @self.app.route("/send", methods=["POST"])
-        def get_data():
+        def send_data():
 
                 conn = sqlite3.connect("messages.db")
 
@@ -51,6 +51,11 @@ class Server():
                 self.close_connection(conn)
 
                 return jsonify({"Success": "Thanks for you request!"}) , 200
+        
+        @self.app.route("/get", methods=["GET"])
+        def get_data():
+            pass
+
     
     def extract_data(self, data):
 
