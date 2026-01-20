@@ -26,7 +26,7 @@ class Server():
         @self.app.route("/send", methods=["POST"])
         def get_data():
 
-            with sqlite3.connect("messages.db") as conn:
+                conn = sqlite3.connect("messages.db")
             
                 if request.content_type != "application/json":
 
@@ -46,6 +46,8 @@ class Server():
                 self.write_data_on_database(conn)
                 self.clear_data()
             
+                self.close_connection(conn)
+                
                 return jsonify({"Success": "Thanks for you request!"}) , 200
 
     def extract_data(self, data):
@@ -82,6 +84,10 @@ class Server():
         m.clear_messages()
         c.clear_connections()
 
+    def close_connection(self, conn):
+
+        conn.close()
+    
     def run_server(self):
 
         self.app.run(self.host, self.port)
