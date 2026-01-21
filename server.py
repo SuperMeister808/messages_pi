@@ -54,9 +54,28 @@ class Server():
         
         @self.app.route("/get", methods=["GET"])
         def get_data():
-            pass
+            
+            conn = sqlite3.connect("messages.db")
 
-    
+            try:
+                colums , rows = self.get_data(conn)
+            except sqlite3.OperationalError:
+                self.close_connection()
+                return jsonify({"Error": "No table found!"}) , 405
+            
+            return jsonify({"colums": colums, "rows": rows})
+            
+    def get_data(self, conn):
+
+        cursor = conn.cursor()
+
+        cursor.exute("SELECT * FROM messages")
+
+        colums = [desc[0] for desc in cursor.descriptionb]
+        rows = cursor.fetchall()
+
+        return colums , rows
+
     def extract_data(self, data):
 
         conn = data["conn"]
