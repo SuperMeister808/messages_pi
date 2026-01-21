@@ -4,7 +4,7 @@ from typing import List
 
 class CollectTitle():
 
-    titles : List["CollectTitle.Titel"] = []
+    titles : List["CollectTitle.Title"] = []
     
     def __init__(self, title):
 
