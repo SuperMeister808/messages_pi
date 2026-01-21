@@ -60,10 +60,10 @@ class Server():
             try:
                 colums , rows = self.get_data(conn)
             except sqlite3.OperationalError:
-                self.close_connection()
+                self.close_connection(conn)
                 return jsonify({"Error": "No table found!"}) , 405
             
-            self.close_connection()
+            self.close_connection(conn)
             return jsonify({"colums": colums, "rows": rows})
             
     def get_data(self, conn):
