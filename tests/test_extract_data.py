@@ -49,20 +49,24 @@ class TestExtractData(unittest.TestCase):
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "close_connection") as close:
+                with patch.object(Server, "clear_data") as clear:
+                    with patch.object(Server, "write_data") as write:
             
-                response = self.test_client.post("/send", json=data)
+                        response = self.test_client.post("/send", json=data)
             
-                connection.assert_called_once()
-                close.assert_called_once()
+                        connection.assert_called_once()
+                        close.assert_called_once()
+                        clear.assert_called_once()
+                        write.assert_not_called()
                 
-                self.assertEqual(response.json, {"Error": "Keys not found"})
-                self.assertEqual(response.status_code, 405)
+                        self.assertEqual(response.json, {"Error": "Keys not found"})
+                        self.assertEqual(response.status_code, 405)
         
-                result_titles = CollectTitle.titles
-                result_messages = CollectMessage.messages
+                        result_titles = CollectTitle.titles
+                        result_messages = CollectMessage.messages
 
-                self.assertEqual(len(result_titles) , 0)
-                self.assertEqual(len(result_messages) , 0)
+                        self.assertEqual(len(result_titles) , 0)
+                        self.assertEqual(len(result_messages) , 0)
 
 
     def test_wrong_key(self):
@@ -71,36 +75,40 @@ class TestExtractData(unittest.TestCase):
 
         with patch("sqlite3.connect", return_value="not relevant") as connection:
             with patch.object(Server, "close_connection") as close:
+                with patch.object(Server, "clear_data") as clear:
+                    with patch.object(Server, "write_data") as write:
                 
-                response = self.test_client.post("/send", json=data)
+                        response = self.test_client.post("/send", json=data)
             
-                connection.assert_called_once()
-                close.assert_called_once()
+                        connection.assert_called_once()
+                        close.assert_called_once()
+                        clear.assert_called_once()
+                        write.assert_not_called()
                 
-                self.assertEqual(response.json, {"Error": "Keys not found"})
-                self.assertEqual(response.status_code, 405)
+                        self.assertEqual(response.json, {"Error": "Keys not found"})
+                        self.assertEqual(response.status_code, 405)
         
-                result_titles = CollectTitle.titles
-                result_messages = CollectMessage.messages
+                        result_titles = CollectTitle.titles
+                        result_messages = CollectMessage.messages
 
-                self.assertEqual(len(result_titles) , 0)
-                self.assertEqual(len(result_messages) , 0)
+                        self.assertEqual(len(result_titles) , 0)
+                        self.assertEqual(len(result_messages) , 0)
 
     def test_extra_key(self):
 
         data = {"title": "title", "message": "message", "extra": "extra"}
 
-        with patch.object(Server, "clear_data") as clear_data:
-            with patch.object(Server, "write_data") as database:
+        with patch.object(Server, "clear_data") as clear:
+            with patch.object(Server, "write_data") as write:
                 with patch("sqlite3.connect", return_value="not relevant") as connection:
-                    with patch.object(Server, "close_connection") as clear_connection:
+                    with patch.object(Server, "close_connection") as close:
 
                         response = self.test_client.post("/send", json=data)
             
                         connection.assert_called_once()
-                        clear_connection.assert_called_once()
-                        clear_data.assert_called_once()
-                        database.assert_called_once()
+                        clear.assert_called_once()
+                        close.assert_called_once()
+                        write.assert_called_once()
                         
                         self.assertEqual(response.json, {"Success": "Thanks for you request!"})
                         self.assertEqual(response.status_code, 200)
