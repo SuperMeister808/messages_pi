@@ -70,9 +70,9 @@ class Server():
 
         cursor = conn.cursor()
 
-        cursor.exeute("SELECT * FROM messages")
+        cursor.execute("SELECT * FROM messages")
 
-        colums = [desc[0] for desc in cursor.descriptionb]
+        colums = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
 
         return colums , rows
