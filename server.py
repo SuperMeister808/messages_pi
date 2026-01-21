@@ -63,6 +63,7 @@ class Server():
                 self.close_connection()
                 return jsonify({"Error": "No table found!"}) , 405
             
+            self.close_connection()
             return jsonify({"colums": colums, "rows": rows})
             
     def get_data(self, conn):
