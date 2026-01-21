@@ -9,6 +9,10 @@ from connections import CollectConnections
 
 import sqlite3
 
+import io
+
+import json
+
 class Server():
 
     def __init__(self, host, port):
@@ -51,6 +55,41 @@ class Server():
                 self.close_connection(conn)
 
                 return jsonify({"Success": "Thanks for you request!"}) , 200
+        
+        @self.app.route("/get", methods=["GET"])
+        def get_data():
+            
+            conn = sqlite3.connect("messages.db")
+
+            try:
+                colums , rows = self.get_table(conn)
+            except sqlite3.OperationalError:
+                self.close_connection(conn)
+                return jsonify({"Error": "No table found!"}) , 405
+            
+            self.close_connection(conn)
+            return jsonify({"colums": colums, "rows": rows})
+            
+    def get_table(self, conn):
+
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM messages")
+
+        colums = [desc[0] for desc in cursor.description]
+        rows = cursor.fetchall()
+
+        return colums , rows
+
+    #user can do it itself ...
+    #def create_file(self, colums, rows):
+        
+    #    data = {"colums": colums, "rows": rows}
+        
+    #    buffer = io.BytesIO(json.dumps(data).encode("utf-8"))
+    #    buffer.seek(0)
+
+    #    return buffer
     
     def extract_data(self, data):
 
