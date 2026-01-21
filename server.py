@@ -9,6 +9,10 @@ from connections import CollectConnections
 
 import sqlite3
 
+import io
+
+import json
+
 class Server():
 
     def __init__(self, host, port):
@@ -77,6 +81,16 @@ class Server():
 
         return colums , rows
 
+    #user can do it itself ...
+    #def create_file(self, colums, rows):
+        
+    #    data = {"colums": colums, "rows": rows}
+        
+    #    buffer = io.BytesIO(json.dumps(data).encode("utf-8"))
+    #    buffer.seek(0)
+
+    #    return buffer
+    
     def extract_data(self, data):
 
         conn = data["conn"]
