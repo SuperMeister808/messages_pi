@@ -58,7 +58,7 @@ class Server():
             conn = sqlite3.connect("messages.db")
 
             try:
-                colums , rows = self.get_data(conn)
+                colums , rows = self.get_table(conn)
             except sqlite3.OperationalError:
                 self.close_connection(conn)
                 return jsonify({"Error": "No table found!"}) , 405
@@ -66,7 +66,7 @@ class Server():
             self.close_connection(conn)
             return jsonify({"colums": colums, "rows": rows})
             
-    def get_data(self, conn):
+    def get_table(self, conn):
 
         cursor = conn.cursor()
 
