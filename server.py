@@ -33,27 +33,41 @@ class Server():
                 conn = sqlite3.connect("messages.db")
 
                 if request.content_type != "application/json":
-
+                    self.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Content Type application/json not found!"}) , 405
             
                 try:
                     data = request.get_json()
                 except BadRequest:
+                    self.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Bad Request"}) , 400
-            
-                data["conn"] = conn
 
                 try:
-                    self.extract_data(data)
+                    title , message = self.extract_data(data)
                 except KeyError:
+                    self.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Keys not found"}) , 405
                 
+                #for testing...
+                try:
+                    self.collect_data(conn, title, message)
+                except Exception as e:
+                    self.clear_data()
+                    self.close_connection(conn)
+                    return jsonify({"Error": f"{e}"}) , 400
+                
+                try:
+                    self.write_data(conn, title, message)
+                except sqlite3.OperationalError:
+                    self.clear_data()
+                    self.close_connection(conn)
+                    return jsonify({"Error": "Table not found!"}) , 405
+                
                 self.clear_data()
                 self.close_connection(conn)
-
                 return jsonify({"Success": "Thanks for you request!"}) , 200
         
         @self.app.route("/get", methods=["GET"])
@@ -64,9 +78,11 @@ class Server():
             try:
                 colums , rows = self.get_table(conn)
             except sqlite3.OperationalError:
+                self.clear_data()
                 self.close_connection(conn)
                 return jsonify({"Error": "No table found!"}) , 405
             
+            self.clear_data()
             self.close_connection(conn)
             return jsonify({"colums": colums, "rows": rows})
             
@@ -93,14 +109,10 @@ class Server():
     
     def extract_data(self, data):
 
-        conn = data["conn"]
         title = data["title"]
         message = data["message"]
         
-        #for Testing...
-        self.collect_data(conn, title, message)
-        
-        self.write_data(conn, title, message)
+        return title , message
 
     def collect_data(self, conn, title, message):
 
