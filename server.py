@@ -64,7 +64,7 @@ class Server():
                 except sqlite3.OperationalError:
                     self.clear_data()
                     self.close_connection(conn)
-                    return jsonify({"Error": "Table not found!"}) , 405
+                    return jsonify({"Error": "Table not found!"}) , 500
                 
                 self.clear_data()
                 self.close_connection(conn)
