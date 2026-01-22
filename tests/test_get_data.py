@@ -31,14 +31,16 @@ class TestGetData(unittest.TestCase):
 
         with patch("sqlite3.connect", return_value=conn) as connection:
             with patch.object(Server, "close_connection") as close:
+                with patch.object(Server, "clear_data") as clear:
 
-                response = self.test_client.get("/get")
+                    response = self.test_client.get("/get")
 
-                connection.assert_called_once()
-                close.assert_called_once()
+                    connection.assert_called_once()
+                    close.assert_called_once()
+                    clear.assert_called_once()
 
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(response.json, {"colums": ["title", "message"], "rows": [["title", "message"]]})
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.json, {"colums": ["title", "message"], "rows": [["title", "message"]]})
 
     def test_empty_database(self):
 
@@ -46,14 +48,16 @@ class TestGetData(unittest.TestCase):
 
         with patch("sqlite3.connect", return_value=conn) as connection:
             with patch.object(Server, "close_connection") as close:
+                with patch.object(Server, "clear_data") as clear:
 
-                response = self.test_client.get("/get")
+                    response = self.test_client.get("/get")
 
-                connection.assert_called_once()
-                close.assert_called_once()
+                    connection.assert_called_once()
+                    close.assert_called_once()
+                    clear.assert_called_once()
                 
-                self.assertEqual(response.status_code, 405)
-                self.assertEqual(response.json, {"Error": "No table found!"})
+                    self.assertEqual(response.status_code, 405)
+                    self.assertEqual(response.json, {"Error": "No table found!"})
 
 if __name__ == "__main__":
 
