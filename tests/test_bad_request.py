@@ -12,7 +12,7 @@ class TestBadRequest(unittest.TestCase):
 
     def setUp(self):
 
-        self.message_handler = MessageHandler
+        self.message_handler = MessageHandler()
         self.message_reader = MessageReader()
         self.server = Server("Testing...", "Testing...", self.message_handler, self.message_reader)
         self.test_client = self.server.app.test_client()
