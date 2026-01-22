@@ -5,7 +5,7 @@ import json
 
 def post_request(data):
     
-    url = "http://192.168.2.116:5000/send"
+    url = "http://192.168.2.126:5000/send"
 
     response = requests.post(url=url, json=data)
 
