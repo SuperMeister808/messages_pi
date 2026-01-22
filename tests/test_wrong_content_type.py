@@ -17,37 +17,47 @@ class TestWrongContentType(unittest.TestCase):
 
             data = {"test": "test"}
         
-            with patch.object(Server, "extract_data") as extract:
-                with patch("sqlite3.connect", return_value="not relevant") as connection:
-                    with patch.object(Server, "close_connection") as clear_connection:
-                        with patch.object(Server, "clear_data") as clear_data:
+            with patch.object(Server, "extract_data", return_value=("t", "m")) as extract:
+                with patch.object(Server, "collect_data") as collect:
+                    with patch.object(Server, "write_data") as write:
+                        with patch("sqlite3.connect", return_value="not relevant") as connection:
+                            with patch.object(Server, "close_connection") as close:
+                                with patch.object(Server, "clear_data") as clear:
 
-                            response = self.test_client.post("/send", json=data)
+                                    response = self.test_client.post("/send", json=data)
 
-                            extract.assert_called_once()
-                            clear_data.assert_called_once()
-                            connection.assert_called_once()
-                            clear_connection.assert_called_once()
+                                    extract.assert_called_once()
+                                    collect.assert_called_once()
+                                    write.assert_called_once()
+                                    connection.assert_called_once()
+                                    close.assert_called_once()
+                                    clear.assert_called_once()
 
-                            self.assertEqual(response.json, {"Success": "Thanks for you request!"})
-                            self.assertEqual(response.status_code, 200)
+                                    self.assertEqual(response.json, {"Success": "Thanks for you request!"})
+                                    self.assertEqual(response.status_code, 200)
 
     def test_wrong_content_type(self):
 
-            data = {"test": (io.BytesIO(b"Testing..."), "test.pdf")}
+                data = {"test": (io.BytesIO(b"Testing..."), "test.pdf")}
         
-            with patch.object(Server, "extract_data") as extract:
-                with patch("sqlite3.connect", return_value="not relevant") as connection:
-                    with patch.object(Server, "close_connection") as clear_connection:
-                        with patch.object(Server, "clear_data") as clear_data:
+            
+                with patch.object(Server, "extract_data", return_value=("t", "m")) as extract:
+                    with patch.object(Server, "collect_data") as collect:
+                        with patch.object(Server, "write_data") as write:
+                            with patch("sqlite3.connect", return_value="not relevant") as connection:
+                                with patch.object(Server, "close_connection") as close:
+                                    with patch.object(Server, "clear_data") as clear:
+                                        response = self.test_client.post("/send", data=data, headers={"Content-Type": "multipart/form-data"})
 
-                            response = self.test_client.post("/send", data=data, headers={"Content-Type": "multipart/form-data"})
+                                        connection.assert_called_once()
+                                        close.assert_called_once()
+                                        extract.assert_not_called()
+                                        collect.assert_not_called()
+                                        write.assert_not_called()
+                                        clear.assert_called_once()
 
-                            connection.assert_called_once()
-                            clear_connection.assert_called_once()
-
-                            self.assertEqual(response.json, {"Error": "Content Type application/json not found!"})
-                            self.assertEqual(response.status_code, 405)
+                                        self.assertEqual(response.json, {"Error": "Content Type application/json not found!"})
+                                        self.assertEqual(response.status_code, 405)
 
 if __name__ == "__main__":
 
