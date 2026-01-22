@@ -15,13 +15,17 @@ import json
 
 class Server():
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, message_handler, message_reader):
 
         self.app = Flask("POST_Pi")
 
         self.host = host
 
         self.port = port
+
+        self.message_handler = message_handler
+
+        self.message_reader = message_reader
 
         self.setup_routes()
 
@@ -33,40 +37,40 @@ class Server():
                 conn = sqlite3.connect("messages.db")
 
                 if request.content_type != "application/json":
-                    self.clear_data()
+                    self.message_handler.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Content Type application/json not found!"}) , 405
             
                 try:
                     data = request.get_json()
                 except BadRequest:
-                    self.clear_data()
+                    self.message_handler.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Bad Request"}) , 400
 
                 try:
-                    title , message = self.extract_data(data)
+                    title , message = self.message_handler.extract_data(data)
                 except KeyError:
-                    self.clear_data()
+                    self.message_handler.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Keys not found"}) , 405
                 
                 #for testing...
                 try:
-                    self.collect_data(conn, title, message)
+                    self.message_handler.collect_data(conn, title, message)
                 except Exception as e:
-                    self.clear_data()
+                    self.message_handler.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": f"{e}"}) , 400
                 
                 try:
-                    self.write_data(conn, title, message)
+                    self.message_handler.write_data(conn, title, message)
                 except sqlite3.OperationalError:
-                    self.clear_data()
+                    self.message_handler.clear_data()
                     self.close_connection(conn)
                     return jsonify({"Error": "Table not found!"}) , 500
                 
-                self.clear_data()
+                self.message_handler.clear_data()
                 self.close_connection(conn)
                 return jsonify({"Success": "Thanks for you request!"}) , 200
         
@@ -76,65 +80,13 @@ class Server():
             conn = sqlite3.connect("messages.db")
 
             try:
-                colums , rows = self.get_table(conn)
+                colums , rows = self.message_reader.get_table(conn)
             except sqlite3.OperationalError:
-                self.clear_data()
                 self.close_connection(conn)
                 return jsonify({"Error": "No table found!"}) , 405
             
-            self.clear_data()
             self.close_connection(conn)
             return jsonify({"colums": colums, "rows": rows})
-            
-    def get_table(self, conn):
-
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM messages")
-
-        colums = [desc[0] for desc in cursor.description]
-        rows = cursor.fetchall()
-
-        return colums , rows
-
-    #user can do it itself ...
-    #def create_file(self, colums, rows):
-        
-    #    data = {"colums": colums, "rows": rows}
-        
-    #    buffer = io.BytesIO(json.dumps(data).encode("utf-8"))
-    #    buffer.seek(0)
-
-    #    return buffer
-    
-    def extract_data(self, data):
-
-        title = data["title"]
-        message = data["message"]
-        
-        return title , message
-
-    def collect_data(self, conn, title, message):
-
-
-        t = CollectTitle(title)   
-        m = CollectMessage(message)
-        c = CollectConnections(conn)
-        
-        t.collect_title()
-        m.collect_messages()
-        c.collect_connection()
-
-    def write_data(self, conn, title, message):
-        
-        d = Database(conn)
-        d.add_message(title, message)
- 
-    def clear_data(self):
-
-        CollectConnections.clear_connections()
-        CollectMessage.clear_messages()
-        CollectTitle.clear_titles()
 
     def close_connection(self, conn):
 
